@@ -2,9 +2,9 @@
   "name": "elenora_szamlazo",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "szamlazo.js",
   "scripts": {
-    "start": "nodemon elenoraapi.js"
+    "start": "nodemon szamlazo.js"
   },
   "keywords": [],
   "author": "",
