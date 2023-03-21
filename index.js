@@ -21,11 +21,14 @@ import {
     dotenv.config()
     import bodyParser from "body-parser";
     app.use(bodyParser.json());
-app.post("/", async (req, res) => {
-  const order = req.body
-  console.log(order)
 
+
+app.post("/", async (req, res) => {
   console.log("!Számla kiállítása folyamatban!")
+
+  const order = req.body.order
+  const cart = req.body.list
+
   const szamlazzClient = new Client({
     authToken: process.env.TOKEN,
     eInvoice: true, // create e-invoice. optional, default: false
@@ -33,8 +36,8 @@ app.post("/", async (req, res) => {
     downloadedInvoiceCount: 1, // optional, default: 1
     responseVersion: 1, // optional, default: 1
     timeout: 0 // optional, default: 0, request timeout in ms (0 = no timeout)
-})
-let seller = new Seller({ // everyting is optional
+  })
+  let seller = new Seller({ // everyting is optional
     bank: {
       name: 'OTP Bank',
       accountNumber: '11720049-21456035'
@@ -46,7 +49,8 @@ let seller = new Seller({ // everyting is optional
     },
     issuerName: ''
 })
-let buyer = new Buyer({
+if(order.szamlazasimod == "same"){
+var buyer = new Buyer({
     name: order.u_firstname + " " + order.u_name,
     country: order.u_legio,
     zip: order.u_postnumber,
@@ -64,27 +68,46 @@ let buyer = new Buyer({
     phone: order.u_tel,
     comment: ''
 })
-let soldItem1 = new Item({
-  label: 'Arany karkötő',
-  quantity: 1,
-  unit: 'db',
-  vat: 0,
-  grossUnitPrice: 4490 // calculates net and total values from per item gross
+}else{
+  var buyer = new Buyer({
+    name: order.szamlazasVezteknev + " " + order.szamlazasUtonev,
+    country: order.szamlazasOrszag,
+    zip: order.szamlazasUtonev,
+    city: order.szamlazasTelepules,
+    address: order.szamlazasUtonev +", "+order.szamlazasTelepules+" "+order.szamlazasCim,
+    taxNumber: '0',
+    postAddress: {
+      name: order.szamlazasVezteknev + " " + order.szamlazasUtonev,
+      zip: order.szamlazasUtonev,
+      city: order.szamlazasTelepules,
+      address: order.szamlazasUtonev +", "+order.szamlazasTelepules+" "+order.szamlazasCim
+    },
+    issuerName: '',
+    identifier: 1,
+    phone: order.szamlazasTel,
+    comment: ''
 })
-let soldItem2 = new Item({
-    label: 'Jáde karkötő',
-    quantity: 1,
-    unit: 'db',
-    vat: 0,
-    grossUnitPrice: 2900 // calculates net and total values from per item gross
-  })
+}
+let newcart = []
+cart.forEach(element => {
+  newcart.push(
+    new Item({
+      label: element.label,
+      quantity: element.quantity,
+      unit: 'db',
+      vat: "AAM",
+      grossUnitPrice: element.grossUnitPrice // calculates net and total values from per item gross
+    })
+  )
+});
+
 let invoice = new Invoice({
     paymentMethod: PaymentMethods.Cash, // optional, default: BankTransfer
     currency: Currencies.Ft,
     language: Languages.Hungarian,
     seller: seller,
     buyer: buyer,
-    items: [ soldItem1, soldItem2 ], // the sold items, required
+    items: newcart, // the sold items, required
     prepaymentInvoice: false // prepayment/deposit invoice should be issued, optional, default: false
   })
 const result = await szamlazzClient.issueInvoice(invoice)
@@ -105,6 +128,6 @@ const httpsServer = https.createServer({
   key: fs.readFileSync('/etc/letsencrypt/live/elenora.hu/privkey.pem'),
   cert: fs.readFileSync('/etc/letsencrypt/live/elenora.hu/fullchain.pem'),
 }, app);
-httpsServer.listen(444, () => {
-  console.log('---HTTPS szerver elerheto a 444 porton---');
+httpsServer.listen(4040, () => {
+  console.log('---Számlázó szerver https elerhető a 4040 porton---');
 });
