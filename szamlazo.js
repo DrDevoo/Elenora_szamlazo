@@ -56,7 +56,6 @@ var buyer = new Buyer({
     zip: order.u_postnumber,
     city: order.u_city,
     address: order.u_postnumber +", "+order.u_city+" "+order.u_addresse,
-    taxNumber: '0',
     postAddress: {
       name: order.u_firstname + " " + order.u_name,
       zip: order.u_postnumber,
@@ -75,7 +74,6 @@ var buyer = new Buyer({
     zip: order.szamlazasUtonev,
     city: order.szamlazasTelepules,
     address: order.szamlazasUtonev +", "+order.szamlazasTelepules+" "+order.szamlazasCim,
-    taxNumber: '0',
     postAddress: {
       name: order.szamlazasVezteknev + " " + order.szamlazasUtonev,
       zip: order.szamlazasUtonev,
@@ -123,6 +121,7 @@ const httpServer = http.createServer(app);
 httpServer.listen(4000, () => {
   console.log('---Számlázó szerver elerhető a 4000 porton---');
 });
+
 
 const httpsServer = https.createServer({
   key: fs.readFileSync('/etc/letsencrypt/live/elenora.hu/privkey.pem'),
