@@ -12,15 +12,15 @@ import {
     PaymentMethods,
     TaxSubject,
     TaxSubjects} from 'szamlazz.js'
-    import * as fs from 'fs';
-    import express from "express";
-    const app = express();
-    import * as http from 'http';
-    import * as https from 'https';
-    import * as dotenv from 'dotenv'
-    dotenv.config()
-    import bodyParser from "body-parser";
-    app.use(bodyParser.json());
+import * as fs from 'fs';
+import express from "express";
+const app = express();
+import * as http from 'http';
+import * as https from 'https';
+import * as dotenv from 'dotenv'
+dotenv.config()
+import bodyParser from "body-parser";
+app.use(bodyParser.json());
 
 
 app.post("/", async (req, res) => {
