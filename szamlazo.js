@@ -98,8 +98,8 @@ cart.forEach(element => {
     })
   )
 });
-
-let invoice = new Invoice({
+if(order.shipping=='delivery-cash'){
+  var invoice = new Invoice({
     paymentMethod: PaymentMethods.Cash, // optional, default: BankTransfer
     currency: Currencies.Ft,
     language: Languages.Hungarian,
@@ -108,6 +108,18 @@ let invoice = new Invoice({
     items: newcart, // the sold items, required
     prepaymentInvoice: false // prepayment/deposit invoice should be issued, optional, default: false
   })
+}else{
+  var invoice = new Invoice({
+    paymentMethod: PaymentMethods.CreditCard, // optional, default: BankTransfer
+    currency: Currencies.Ft,
+    language: Languages.Hungarian,
+    seller: seller,
+    buyer: buyer,
+    items: newcart, // the sold items, required
+    prepaymentInvoice: false // prepayment/deposit invoice should be issued, optional, default: false
+  })
+}
+
 const result = await szamlazzClient.issueInvoice(invoice)
 if (result.pdf) {
     res.status(200).json(result)
