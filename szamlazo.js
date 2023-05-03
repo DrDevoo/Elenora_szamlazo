@@ -94,7 +94,7 @@ cart.forEach(element => {
       quantity: element.quantity,
       unit: 'db',
       vat: "AAM",
-      grossUnitPrice: element.grossUnitPrice // calculates net and total values from per item gross
+      grossUnitPrice: element.grossUnitPrice / 100 // calculates net and total values from per item gross
     })
   )
 });
