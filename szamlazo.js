@@ -21,7 +21,9 @@ import * as dotenv from 'dotenv'
 dotenv.config()
 import bodyParser from "body-parser";
 app.use(bodyParser.json());
-
+app.get("/", async (req, res) => {
+  res.status(200).send("ELENORA SZAMLAZO API 1.0.0 🙌 ");
+})
 
 app.post("/", async (req, res) => {
   console.log("!Számla kiállítása folyamatban!")
